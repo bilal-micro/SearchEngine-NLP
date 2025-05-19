@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: product_db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: Q9}90Yh)On>k
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  web:
+    build: ./django/
+    volumes:
+      - ./django/:/app 
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DEBUG=1
+      - DJANGO_DB_HOST=db
+      - DJANGO_DB_NAME=product_db
+      - DJANGO_DB_USER=root
+      - DJANGO_DB_PASSWORD=Q9}90Yh)On>k
+      - CELERY_BROKER=redis://redis:6379/0
+
+  celery:
+    build: ./django/
+    command: celery -A core worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - db
+    environment:
+      - DJANGO_DB_HOST=db
+      - DJANGO_DB_NAME=product_db
+      - DJANGO_DB_USER=root
+      - DJANGO_DB_PASSWORD=Q9}90Yh)On>k
+      - CELERY_BROKER=redis://redis:6379/0
+
+volumes:
+  postgres_data:
