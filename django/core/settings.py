@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 20000
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'product'
+    'product',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -77,10 +78,10 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DJANGO_DB_NAME'),
-        'USER': os.getenv('DJANGO_DB_USER'),
-        'PASSWORD': os.getenv('DJANGO_DB_PASSWORD'),
-        'HOST': os.getenv('DJANGO_DB_HOST'),
+        'NAME': os.getenv('DJANGO_DB_NAME' , 'product_db'),
+        'USER': os.getenv('DJANGO_DB_USER' , 'root'),
+        'PASSWORD': os.getenv('DJANGO_DB_PASSWORD' , 'Q9}90Yh)On>k'),
+        'HOST': os.getenv('DJANGO_DB_HOST' , 'localhost'),
         'PORT': '5432',
     }
 }

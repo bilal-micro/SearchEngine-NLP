@@ -5,6 +5,7 @@ from .models import Product
 from .serializers import ProductSerializer
 from product.servicess.engine import Engine
 from django.db.models import Q
+import csv
 
 class ProductListCreateAPIView(APIView):
     def get(self, request):
@@ -86,8 +87,29 @@ class NormalSearch(APIView):
         if max_price is not None:
             filters &= Q(price__lte=max_price)
 
-        ps = Product.objects.filter(filters)[:k_number]
+        ps = Product.objects.filter(filters)[:int(k_number)]
 
         serializer = ProductSerializer(ps , many=True)
         return Response({'data': serializer.data})
     
+class LoadDB(APIView):
+    def get(self , request):
+        if Product.objects.count() == 0:
+            with open("products_20k_mixed.csv", "r", encoding="utf-8") as f:
+                reader = csv.reader(f)
+                next(reader)  # Skip header
+                for row in reader:
+                    if row:
+                        # pid = row[0]
+                        name = row[1]
+                        category = row[2]
+                        brand = row[3]
+                        price = row[4]
+                        Product.objects.create(
+                            title = name,
+                            category = category,
+                            brand = brand,
+                            price = price
+                        )
+                        print(name , category , brand , price)
+        return Response({'data': 'Database loaded successfully'})

@@ -23,8 +23,8 @@ python manage.py runserver 0.0.0.0:8000 &
 sleep 5
 
 # Run your custom script
-echo "📥 Running database_loader.py..."
-python database_loader.py
+# echo "📥 Running database_loader.py..."
+# python database_loader.py
 
 # Keep container alive
 wait
